@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\MenuController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +18,7 @@ use App\Http\Controllers\Admin\AdminController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('index');
 
 Auth::routes();
 
@@ -45,9 +46,12 @@ Route::prefix('admin')->name('admin.')->group(function(){
           Route::view('/login','dashboard.admin.login')->name('login');
           Route::post('/check',[AdminController::class,'check'])->name('check');
     });
-
+    
     Route::middleware(['auth:admin','PreventBackHistory'])->group(function(){
         Route::view('/home','dashboard.admin.home')->name('home');
+        Route::get('/menu',[MenuController::class,'index'])->name('menu');
+        Route::get('/menu/add',[MenuController::class,'create'])->name('menu.add');
+        Route::post('/menu/store',[MenuController::class,'store'])->name('menu.store');
         Route::post('/logout',[AdminController::class,'logout'])->name('logout');
     });
 
