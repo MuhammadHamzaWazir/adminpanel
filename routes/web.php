@@ -52,6 +52,9 @@ Route::prefix('admin')->name('admin.')->group(function(){
         Route::get('/menu',[MenuController::class,'index'])->name('menu');
         Route::get('/menu/add',[MenuController::class,'create'])->name('menu.add');
         Route::post('/menu/store',[MenuController::class,'store'])->name('menu.store');
+        Route::get('/menu/edit/{id}',[MenuController::class,'edit'])->name('menu.edit');
+        Route::post('/menu/update/{id}',[MenuController::class,'update'])->name('menu.update');
+        Route::get('/menu/del/{id}',[MenuController::class,'destroy'])->name('menu.del');
         Route::post('/logout',[AdminController::class,'logout'])->name('logout');
     });
 

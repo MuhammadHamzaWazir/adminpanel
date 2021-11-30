@@ -1,26 +1,40 @@
 @extends('AdminLayouts.app')
 @section('content')
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" style="height: auto;">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Project Edit</h1>
+            <h1>Menu Edit</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Project Edit</li>
+              <li class="breadcrumb-item"><a href="{{ route('admin.home') }}">Home</a></li>
+              <li class="breadcrumb-item active">Menu Edit</li>
             </ol>
           </div>
         </div>
       </div><!-- /.container-fluid -->
     </section>
-
+@php
+    print_r($data);
+@endphp
+{{ $data->id }}
     <!-- Main content -->
     <section class="content">
+    <form action="{{ url('admin/menu/update/'.$data->id) }}" method="post" enctype="multipart/form-data">
+     @csrf
+     @if (session('status') == 200)
+       <div class="alert alert-success">
+           {{ session('message') }}
+       </div>
+      @elseif(session('status') == 401)
+      <div class="alert alert-danger">
+        {{ session('message') }}
+    </div>
+      @endif
       <div class="row">
         <div class="col-md-6">
           <div class="card card-primary">
@@ -35,29 +49,70 @@
             </div>
             <div class="card-body">
               <div class="form-group">
-                <label for="inputName">Project Name</label>
-                <input type="text" id="inputName" class="form-control" value="AdminLTE">
+                <label for="title">Title</label>
+                <input type="hidden" name="id" value="{{ $data->id }}">
+                <input type="text" name="title" id="title" value="{{ $data->id }}" class="form-control @error('title') is-invalid @enderror">
+                @error('metaTag') <span id="error" class="error invalid-feedback">{{ _($errors->first('title')) }}</span> @enderror
               </div>
               <div class="form-group">
-                <label for="inputDescription">Project Description</label>
-                <textarea id="inputDescription" class="form-control" rows="4">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terr.</textarea>
+                <label for="description">Description</label>
+                <textarea id="description" name="description" value="{{ $data->id }}" class="form-control @error('description')is-invalid @enderror " rows="4"></textarea>
+                @error('description') <span id="error" class="error invalid-feedback">{{ _($errors->first('description')) }}</span> @enderror
               </div>
               <div class="form-group">
                 <label for="inputStatus">Status</label>
-                <select id="inputStatus" class="form-control custom-select">
-                  <option disabled>Select one</option>
-                  <option>On Hold</option>
-                  <option>Canceled</option>
-                  <option selected>Success</option>
+                <select id="inputStatus" name="status" class="form-control custom-select @error('status')is-invalid @enderror ">
+                  <option @if ($data->status == 'Active') selected @endif value="Active">Active</option>
+                  <option @if ($data->status == 'InActive') selected @endif value="InActive">In-Active</option>
                 </select>
+                @error('status') <span id="error" class="error invalid-feedback">{{ _($errors->first('status')) }}</span> @enderror
               </div>
               <div class="form-group">
-                <label for="inputClientCompany">Client Company</label>
-                <input type="text" id="inputClientCompany" class="form-control" value="Deveint Inc">
+                <label for="inputStatus">Parent</label>
+                <select id="parent_id" name="parent_id" class="form-control custom-select @error('parent_id')is-invalid @enderror ">
+                  <option selected disabled>Select one</option>
+                  <option  @if ($data->parent_id == '0') selected @endif  value="0">No Parent</option>
+                  <option>Canceled</option>
+                  <option>Success</option>
+                </select>
+                @error('parent_id') <span id="error" class="error invalid-feedback">{{ _($errors->first('parent_id')) }}</span> @enderror
               </div>
               <div class="form-group">
-                <label for="inputProjectLeader">Project Leader</label>
-                <input type="text" id="inputProjectLeader" class="form-control" value="Tony Chicken">
+                <label for="slug">Slug</label>
+                <input type="text" id="slug" name="slug" value="{{ $data->id }}" class="form-control @error('slug')is-invalid @enderror ">
+                @error('slug') <span id="error" class="error invalid-feedback">{{ _($errors->first('slug')) }}</span> @enderror
+              </div>
+              <div class="form-group">
+                <label for="url">Url</label>
+                <input type="text" id="url" name="url"  value="{{ $data->id }}"  class="form-control @error('url')is-invalid @enderror ">
+                @error('url') <span id="error" class="error invalid-feedback">{{ _($errors->first('url')) }}</span> @enderror
+              </div>
+              <div class="form-group">
+                <label for="order">Order</label>
+                <input type="text" id="order" name="order"  value="{{ $data->id }}"  class="form-control @error('order')is-invalid @enderror ">
+                @error('order') <span id="error" class="error invalid-feedback">{{ _($errors->first('order')) }}</span> @enderror
+              </div>
+              <div class="form-group">
+                <label for="image">Image</label>
+                <input type="file" id="image" name="image" class="form-control @error('image')is-invalid @enderror ">
+                @error('image') <span id="error" class="error invalid-feedback">{{ _($errors->first('image')) }}</span> @enderror
+              </div>
+              <!-- checkbox -->
+              <div class="form-group">
+                <label for="image">Position</label>
+                <div class="form-check">
+                  <input class="form-check-input @error('position')is-invalid @enderror " type="checkbox" @if ($data->position == '0') selected @endif name="position[]" value="primary">
+                  <label class="form-check-label">Primary</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input @error('position')is-invalid @enderror " type="checkbox" name="position[]" value="main">
+                  <label class="form-check-label">Secondary</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input @error('position')is-invalid @enderror " type="checkbox" name="position[]" value="footer">
+                  <label class="form-check-label">Footer</label>
+                </div>
+                @error('position')<span id="terms-error" class="error invalid-feedback" style="display: inline;">{{ _($errors->first('position')) }}</span> @enderror
               </div>
             </div>
             <!-- /.card-body -->
@@ -67,7 +122,7 @@
         <div class="col-md-6">
           <div class="card card-secondary">
             <div class="card-header">
-              <h3 class="card-title">Budget</h3>
+              <h3 class="card-title">SEO</h3>
 
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -77,90 +132,20 @@
             </div>
             <div class="card-body">
               <div class="form-group">
-                <label for="inputEstimatedBudget">Estimated budget</label>
-                <input type="number" id="inputEstimatedBudget" class="form-control" value="2300" step="1">
+                <label for="metaTitle">Meta Title</label>
+                <input type="text" name="metaTitle" id="metaTitle" class="form-control @error('metaTitle')is-invalid @enderror ">
+                @error('metaTitle') <span id="error" class="error invalid-feedback">{{ _($errors->first('metaTitle')) }}</span> @enderror
               </div>
               <div class="form-group">
-                <label for="inputSpentBudget">Total amount spent</label>
-                <input type="number" id="inputSpentBudget" class="form-control" value="2000" step="1">
+                <label for="metaDescription">Meta Description</label>
+                <input type="text" name="metaDescription" id="metaDescription" class="form-control @error('metaDescription')is-invalid @enderror ">
+                @error('metaTag') <span id="error" class="error invalid-feedback">{{ _($errors->first('title')) }}</span> @enderror
               </div>
               <div class="form-group">
-                <label for="inputEstimatedDuration">Estimated project duration</label>
-                <input type="number" id="inputEstimatedDuration" class="form-control" value="20" step="0.1">
+                <label for="metaTag">Meta Tag</label>
+                <input type="text" name="metaTag" id="metaTag" class="form-control @error('metaTag')is-invalid @enderror ">
+                @error('metaTag')<span class="error invalid-feedback">{{ _($errors->first('metaTag')) }}</span> @enderror
               </div>
-            </div>
-            <!-- /.card-body -->
-          </div>
-          <!-- /.card -->
-          <div class="card card-info">
-            <div class="card-header">
-              <h3 class="card-title">Files</h3>
-
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body p-0">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>File Name</th>
-                    <th>File Size</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-
-                  <tr>
-                    <td>Functional-requirements.docx</td>
-                    <td>49.8005 kb</td>
-                    <td class="text-right py-0 align-middle">
-                      <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                        <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
-                      </div>
-                    </td>
-                  <tr>
-                    <td>UAT.pdf</td>
-                    <td>28.4883 kb</td>
-                    <td class="text-right py-0 align-middle">
-                      <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                        <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
-                      </div>
-                    </td>
-                  <tr>
-                    <td>Email-from-flatbal.mln</td>
-                    <td>57.9003 kb</td>
-                    <td class="text-right py-0 align-middle">
-                      <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                        <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
-                      </div>
-                    </td>
-                  <tr>
-                    <td>Logo.png</td>
-                    <td>50.5190 kb</td>
-                    <td class="text-right py-0 align-middle">
-                      <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                        <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
-                      </div>
-                    </td>
-                  <tr>
-                    <td>Contract-10_12_2014.docx</td>
-                    <td>44.9715 kb</td>
-                    <td class="text-right py-0 align-middle">
-                      <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                        <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
-                      </div>
-                    </td>
-
-                </tbody>
-              </table>
             </div>
             <!-- /.card-body -->
           </div>
@@ -169,10 +154,11 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <a href="#" class="btn btn-secondary">Cancel</a>
-          <input type="submit" value="Save Changes" class="btn btn-success float-right">
+          <a href="{{ route('admin.menu') }}" class="btn btn-secondary">All Menu</a>
+          <input type="submit" value="Edit Menu" class="btn btn-success float-right">
         </div>
       </div>
+    </form>
     </section>
     <!-- /.content -->
   </div>

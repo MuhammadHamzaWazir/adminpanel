@@ -20,6 +20,7 @@ class CreateMenusTable extends Migration
             $table->string('description');
             $table->string('slug');
             $table->string('url');
+            $table->string('order');
             $table->string('image');
             $table->string('status');
             $table->string('position');

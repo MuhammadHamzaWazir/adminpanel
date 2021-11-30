@@ -14,6 +14,7 @@ class Menu extends Model
         'description',
         'slug',
         'url',
+        'order',
         'image',
         'status',
         'position',
